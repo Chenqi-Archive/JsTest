@@ -1,0 +1,102 @@
+#豆瓣半自动备份工具
+
+##广播
+
+	别名	类别        	action  objectKind  targetType
+			----------  	------  -----    	---
+√	saying	文字        	1       1018		sns
+√	images	文字带图片  	2       1018		sns
+			转发		  reshared_by			
+√	forward	转发带评论    	0		1018        ''
+			转发日记
+			转发网页				
+			分享海报     	1       1025        rec
+			写了新日记
+			想读			1		1001		book
+√	book	在读        	2       1001		book
+√	book	读过			3	    1001        book
+			想看            2		1002		movie
+			在看			1	    1002        movie
+√	movie	看过			3		1002		movie
+			写了书评
+√	member	关注了成员		5		1000		sns		
+√	group	加入了小组		8		1019		sns
+√	club	加入了Club  	9       1019		sns
+√	sign	更改签名        9		0			sns
+
+
+
+# 旧格式
+
+status : {
+	status_id : int,
+	user_id : int,
+	user_name : string,
+	time : int,
+	
+	type : string,
+	data : <
+		forward : {
+			text : string,
+			status : status,
+		},
+		broadcast : {
+			text : string,
+		},
+		broadcast-with-images : {
+			text : string,
+			img_list : [
+				image_url : string,
+				...
+			],
+		},
+		book : {
+			name : string,
+			url : string,
+			image_url : string;
+			status: string,
+			rating : string,
+			review : string,
+		},
+		follow : {
+			name : string,
+			url : string,
+			image_url : string;
+		},
+		join-group : {
+			name : string,
+			url : string,
+			image_url : string;
+		}
+		join-club : {
+			name : string,
+			url : string,
+			image_url : string;
+		},
+	>,
+}
+
+
+评论：
+
+status_comments : {
+	status_id : int,
+	comment_list : [
+		comment : {
+			user_id : int,
+			user_name : string,
+			time : int,
+			text : string,
+			repliy_list : [
+				reply : {
+					user_id : int,
+					user_name : string,
+					time : int,
+					text : string,
+				},
+				...
+			]
+		},
+		...
+	]
+}
