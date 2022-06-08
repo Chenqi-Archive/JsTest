@@ -72,19 +72,25 @@ function load_css(code) {
 
 function determine_status_type(status) {
 	let item = status.children[0];
-	if (item.classList.contains('reshared_by')) { return 'forward_direct'; }
-	if (item.dataset.action == '0') { return 'forward'; }
-	if (item.dataset.action == '9' && item.dataset.objectKind == '0') { return 'sign'; }
-	if (item.dataset.targetType == 'book') { return 'book'; }
-	if (item.dataset.targetType == 'movie') { return 'movie'; }
+	switch (item.classList.contains('reshared_by')) {
+		case true: return 'forward_direct';
+	}
+	switch (item.dataset.objectKind) {
+		case '0': return 'sign';
+		case '1000': return 'member';
+		case '1001': return 'book';
+		case '1002': return 'movie';
+		case '1022': return 'website';
+		case '1025': return 'poster';
+	}
 	switch (item.dataset.action) {
+		case '0': return 'forward';
 		case '1': return 'saying';
 		case '2': return 'images';
-		case '5': return 'member';
 		case '8': return 'group';
 		case '9': return 'club';
 	}
-	return;
+	return '';
 }
 
 function save_status_basic(status, obj) {
@@ -132,6 +138,18 @@ function save_status_forward(status, obj, data) {
 
 	data.text = text.children[1].innerText;
 	data.status = backup_status(shared);
+}
+
+function save_status_website(status, obj, data) {
+	save_status_basic(status, obj);
+
+	let text = status.children[0].children[0].children[0].children[1];
+	let bd = status.children[0].children[0].children[1];
+	let link = bd.children[0].children[1].children[0].children[0];
+
+	data.text = text.children[1].innerText;
+	data.url = link.href;
+	data.title = link.innerText;
 }
 
 function save_status_book(status, obj, data) {
@@ -225,6 +243,7 @@ async function backup_status(status) {
 		case 'saying': save_status_saying(status, obj, obj.data); break;
 		case 'images': save_status_images(status, obj, obj.data); break;
 		case 'forward': save_status_forward(status, obj, obj.data); break;
+		case 'website': save_status_website(status, obj, obj.data); break;
 		case 'book': save_status_book(status, obj, obj.data); break;
 		case 'movie': save_status_movie(status, obj, obj.data); break;
 		case 'member': save_status_member(status, obj, obj.data); break;
