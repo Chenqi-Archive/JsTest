@@ -80,6 +80,7 @@ function determine_status_type(status) {
 		case '1000': return 'member';
 		case '1001': return 'book';
 		case '1002': return 'movie';
+		case '1015': return 'doulist';
 		case '1022': return 'website';
 		case '1025': return 'poster';
 	}
@@ -145,11 +146,16 @@ function save_status_website(status, obj, data) {
 
 	let text = status.children[0].children[0].children[0].children[1];
 	let bd = status.children[0].children[0].children[1];
-	let link = bd.children[0].children[1].children[0].children[0];
+	let link = bd.children[0].children[0].children[0].children[0];
 
 	data.text = text.children[1].innerText;
 	data.url = link.href;
 	data.title = link.innerText;
+}
+
+function save_status_doulist(status, obj, data) {
+	save_status_basic(status, obj);
+	throw "unimplemented";
 }
 
 function save_status_book(status, obj, data) {
@@ -244,11 +250,12 @@ async function backup_status(status) {
 		case 'images': save_status_images(status, obj, obj.data); break;
 		case 'forward': save_status_forward(status, obj, obj.data); break;
 		case 'website': save_status_website(status, obj, obj.data); break;
+		case 'doulist': save_status_doulist(status, obj, obj.data); break;
 		case 'book': save_status_book(status, obj, obj.data); break;
 		case 'movie': save_status_movie(status, obj, obj.data); break;
 		case 'member': save_status_member(status, obj, obj.data); break;
-		case 'club': save_status_club(status, obj, obj.data); break;
 		case 'group': save_status_group(status, obj, obj.data); break;
+		case 'club': save_status_club(status, obj, obj.data); break;
 		case 'sign': save_status_sign(status, obj, obj.data); break;
 		default: skip_status(status); return;
 	}
